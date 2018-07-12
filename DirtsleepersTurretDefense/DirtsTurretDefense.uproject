@@ -10,7 +10,9 @@
 			"LoadingPhase": "Default",
 			"AdditionalDependencies": [
 				"Engine",
-				"UMG"
+				"CoreUObject",
+				"UMG",
+				"BlueprintGraph"
 			]
 		}
 	]

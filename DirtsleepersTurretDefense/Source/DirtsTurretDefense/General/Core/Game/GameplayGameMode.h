@@ -11,7 +11,7 @@
  * 
  */
 
-UCLASS()
+UCLASS(Abstract)
 class DIRTSTURRETDEFENSE_API AGameplayGameMode : public ADirtsTurretDefenseGameModeBase
 {
 	GENERATED_BODY()

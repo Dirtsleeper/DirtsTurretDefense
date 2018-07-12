@@ -9,11 +9,21 @@
 /**
  * 
  */
-UCLASS()
+UCLASS(Abstract, Blueprintable)
 class DIRTSTURRETDEFENSE_API ASandboxModeGameMode : public AGameplayGameMode
 {
 	GENERATED_BODY()
-	
+private:
+
+protected:
+
+public:
+
+public:
+
+protected:
+
+private:
 	
 	
 	
