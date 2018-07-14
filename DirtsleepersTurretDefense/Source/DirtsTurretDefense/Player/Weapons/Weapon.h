@@ -1,7 +1,9 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
+#include "HUD/Main/Upgrades/UpgradeTypeEnum.h"
 #include "WeaponUpgradeStruct.h"
+#include "WeaponInfoStruct.h"
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
@@ -20,6 +22,12 @@ private:
 
 	bool _bInitialized = false;
 
+	FWeaponInfo _Info;
+
+	FWeaponUpgrade _UpgradeState;
+
+	FTimerHandle FireProjectileTimer;
+
 protected:
 
 public:
@@ -31,7 +39,13 @@ public:
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
-	void InitializeUpgrades(FWeaponUpgrade UpgradeState);
+	void InitializeWeapon(struct FWeaponInfo WeaponInfo);
+
+	void Unlock();
+
+	void Upgrade(EWeaponUpgradeType WeaponUpgrade);
+
+	FWeaponInfo GetInfo();
 
 	void FirePressed();
 
@@ -42,6 +56,18 @@ public:
 	bool IsReloading() { return _bReloading; }
 
 	void Reload();
+
+
+	// Weapon Stats
+	float GetDamage();
+
+	float GetArmorPenetration();
+
+	float GetFireRate();
+
+	float GetMagazineSize();
+
+	float GetReloadTime();
 
 protected:
 	// Called when the game starts
@@ -61,8 +87,10 @@ protected:
 
 	virtual void OnFinishReloading();
 
+	void StartFireTimer();
+
+	void ClearFireTimer();
+
 private:
 
-public:	
-	
 };

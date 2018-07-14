@@ -9,27 +9,29 @@
 
 void IWeaponInterface::IntializeWeapons(UWeapon*& PrimaryWeapon, UWeapon*& SecondaryWeapon, UWeapon*& SpecialWeapon)
 {
-	if (UGameplayStatics::DoesSaveGameExist(TEXT("PlayerTurret"), GI::GetGameInstance(GetOwner())->GetSaveSlot()))
+	if (UTurretSave* PlayerTurretSave = FSaveManager::Get().GetTurretSave())
 	{
-		UTurretSave* PlayerTurretSave = Cast<UTurretSave>(UGameplayStatics::LoadGameFromSlot(TEXT("PlayerTurret"), GI::GetGameInstance(GetOwner())->GetSaveSlot()));
-
 		if (PlayerTurretSave->PrimaryWeapon)
 		{
 			PrimaryWeapon = NewObject<UWeapon>(GetOwner(), PlayerTurretSave->PrimaryWeapon.Get());
-			PrimaryWeapon->InitializeUpgrades(PlayerTurretSave->PrimaryUpgrades);
+			FWeaponInfo Info = GI::GetGameInstance(GetOwner())->GetWeaponInfoFromDataTable(EWeaponType::Primary, PlayerTurretSave->PrimaryWeaponID);
+			PrimaryWeapon->InitializeWeapon(Info);
 			PrimaryWeapon->RegisterComponent();
 			GetOwner()->AddOwnedComponent(PrimaryWeapon);
 		}
 		if (PlayerTurretSave->SecondaryWeapon)
 		{
 			SecondaryWeapon = NewObject<UWeapon>(GetOwner(), PlayerTurretSave->SecondaryWeapon.Get(), TEXT("SecondaryWeapon"));
-			SecondaryWeapon->InitializeUpgrades(PlayerTurretSave->SecondaryUpgrades);
+			FWeaponInfo Info = GI::GetGameInstance(GetOwner())->GetWeaponInfoFromDataTable(EWeaponType::Secondary, PlayerTurretSave->SecondaryWeaponID);
+			SecondaryWeapon->InitializeWeapon(Info);
 			SecondaryWeapon->RegisterComponent();
 			GetOwner()->AddOwnedComponent(SecondaryWeapon);
 		}
 		if (PlayerTurretSave->SpecialWeapon)
 		{
 			SpecialWeapon = NewObject<UWeapon>(GetOwner(), PlayerTurretSave->SpecialWeapon.Get(), TEXT("SpecialWeapon"));
+			FWeaponInfo Info = GI::GetGameInstance(GetOwner())->GetWeaponInfoFromDataTable(EWeaponType::Special, PlayerTurretSave->SpecialWeaponID);
+			SpecialWeapon->InitializeWeapon(Info);
 			SpecialWeapon->RegisterComponent();
 			GetOwner()->AddOwnedComponent(SpecialWeapon);
 		}
@@ -64,6 +66,10 @@ void IWeaponInterface::Reload()
 
 void IWeaponInterface::SwitchWeapons()
 {
+	if (GetSelectedWeapon()->IsFiring())
+	{
+		FireReleased();
+	}
 	UE_LOG(LogTemp, Warning, TEXT("Impelement SwitchWeapons in %s"), *GetOwner()->GetFName().ToString());
 }
 

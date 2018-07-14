@@ -38,7 +38,7 @@ void AGameplayPlayerController::InputAction_Fire_Released()
 {
 	if (IWeaponInterface* Interface = Cast<IWeaponInterface>(ControlledPawn))
 	{
-		Interface->FireReleased();
+		Interface->FirePressed();
 	}
 }
 
@@ -46,7 +46,7 @@ void AGameplayPlayerController::InputAction_Reload_Pressed()
 {
 	if (IWeaponInterface* Interface = Cast<IWeaponInterface>(ControlledPawn))
 	{
-		Interface->Reload();
+		Interface->FireReleased();
 	}
 }
 

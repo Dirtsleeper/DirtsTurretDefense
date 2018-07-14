@@ -52,7 +52,7 @@ void UWeapon::OnFireReleased()
 
 void UWeapon::FireProjectile()
 {
-	UE_LOG(LogTemp, Error, TEXT("FireProjectile"));
+
 }
 
 void UWeapon::OnBeginReload()
@@ -73,7 +73,7 @@ void UWeapon::OnFinishReloading()
 
 void UWeapon::StartFireTimer()
 {
-	GetWorld()->GetTimerManager().SetTimer(FireProjectileTimer, this, &UWeapon::FireProjectile, _Info.GetTimeBetweenProjectiles(_UpgradeState), true);
+	GetWorld()->GetTimerManager().SetTimer(FireProjectileTimer, this, &UWeapon::FireProjectile, _Info.GetTimeBetweenProjectiles(_UpgradeState));
 }
 
 void UWeapon::ClearFireTimer()

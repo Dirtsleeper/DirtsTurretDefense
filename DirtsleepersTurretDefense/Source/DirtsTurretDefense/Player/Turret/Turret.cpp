@@ -46,6 +46,10 @@ void ATurret::BeginPlay()
 {
 	Super::BeginPlay();
 
+	FSaveManager::Get().UnlockWeapon(0);
+
+	IWeaponInterface::IntializeWeapons(_PrimaryWeapon, _SecondaryWeapon, _SpecialWeapon);
+	SelectPrimaryWeapon();
 }
 
 void ATurret::SwitchWeapons()
@@ -76,14 +80,19 @@ void ATurret::SelectSecondaryWeapon()
 	}
 }
 
-UWeapon* ATurret::GetSelectedWeapon()
+UWeapon* ATurret::GetPrimaryWeapon()
 {
-	return _SelectedWeapon.Get();
+	return _PrimaryWeapon;
 }
 
-void ATurret::InitializeWeapons()
+UWeapon* ATurret::GetSecondaryWeapon()
 {
-	
+	return _SecondaryWeapon;
+}
+
+UWeapon* ATurret::GetSpecialWeapon()
+{
+	return _SpecialWeapon;
 }
 
 // Called every frame
@@ -100,3 +109,7 @@ void ATurret::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 
 }
 
+UWeapon* ATurret::GetSelectedWeapon()
+{
+	return _SelectedWeapon.Get();
+}

@@ -68,14 +68,13 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+	virtual UWeapon* GetSelectedWeapon() override;
+
 	UWeapon* GetPrimaryWeapon();
 
 	UWeapon* GetSecondaryWeapon();
 
 	UWeapon* GetSpecialWeapon();
-
-	// Weapon Interface
-	virtual UWeapon* GetSelectedWeapon() override;
 
 protected:
 	// Called when the game starts or when spawned
@@ -83,10 +82,10 @@ protected:
 
 
 	// Weapon Interface
-	virtual void SwitchWeapons() override;
+	void SwitchWeapons();
 
-	virtual void SelectPrimaryWeapon() override;
+	void SelectPrimaryWeapon();
 
-	virtual void SelectSecondaryWeapon() override;
+	void SelectSecondaryWeapon();
 
 };

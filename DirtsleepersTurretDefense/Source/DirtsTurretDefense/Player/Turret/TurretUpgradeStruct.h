@@ -2,31 +2,30 @@
 
 #pragma once
 #include "HUD/Main/Upgrades/UpgradeTypeEnum.h"
-
 #include "DirtsTurretDefense.h"
+
 #include "CoreMinimal.h"
 #include "Engine/UserDefinedStruct.h"
-#include "WeaponUpgradeStruct.generated.h"
+#include "TurretUpgradeStruct.generated.h"
 
 /**
  * 
  */
 USTRUCT(BlueprintType, Blueprintable)
-struct FWeaponUpgrade
+struct FTurretUpgrade
 {
 	GENERATED_BODY()
 private:
-	TMap<EWeaponUpgradeType, uint8> _Prestige;
+	TMap<ETurretUpgradeType, uint8> _Prestige;
 
-	TMap<EWeaponUpgradeType, uint8> _Upgrade;
+	TMap<ETurretUpgradeType, uint8> _Upgrade;
 
 protected:
 
 public:
-	
-	
+
 public:
-	FWeaponUpgrade()
+	FTurretUpgrade()
 	{
 		InitializeMaps();
 	}
@@ -47,13 +46,14 @@ public:
 		return Values;
 	}
 
-	void Prestige(EWeaponUpgradeType Upgrade)
+
+	void Prestige(ETurretUpgradeType Upgrade)
 	{
 		++_Prestige[Upgrade];
 		_Upgrade[Upgrade] = 0;
 	}
 
-	void Upgrade(EWeaponUpgradeType Upgrade)
+	void Upgrade(ETurretUpgradeType Upgrade)
 	{
 		if (_Upgrade[Upgrade] == 5)
 		{
@@ -65,12 +65,12 @@ public:
 		}
 	}
 
-	int32 GetPrestige(EWeaponUpgradeType Upgrade)
+	int32 GetPrestige(ETurretUpgradeType Upgrade)
 	{
 		return _Prestige[Upgrade];
 	}
 
-	int32 GetUpgrade(EWeaponUpgradeType Upgrade)
+	int32 GetUpgrade(ETurretUpgradeType Upgrade)
 	{
 		return _Upgrade[Upgrade];
 	}
@@ -80,27 +80,33 @@ protected:
 private:
 	void InitializeMaps()
 	{
-		for (EWeaponUpgradeType Upgrade : EnumGetList<EWeaponUpgradeType>(TEXT("EWeaponUpgradeType")))
+		for (ETurretUpgradeType Upgrade : EnumGetList<ETurretUpgradeType>(TEXT("ETurretUpgradeType")))
 		{
 			_Prestige.Add(Upgrade, 0);
 			_Upgrade.Add(Upgrade, 0);
 		}
 	}
 
-	bool operator==(const FWeaponUpgrade& other) const
+public:
+	bool operator==(const FTurretUpgrade& other) const
 	{
 		return GetPrestigeValues() == other.GetPrestigeValues() && GetUpgradeValues() == other.GetUpgradeValues();
 	}
+
 };
 
-FORCEINLINE uint32 GetTypeHash(const FWeaponUpgrade& s)
+FORCEINLINE uint32 GetTypeHash(const FTurretUpgrade& s)
 {
-	return FCrc::MemCrc_DEPRECATED(&s, sizeof(FWeaponUpgrade));
+	return FCrc::MemCrc_DEPRECATED(&s, sizeof(FTurretUpgrade));
 }
 
+
 UCLASS()
-class DIRTSTURRETDEFENSE_API UWeaponUpgradeStruct : public UUserDefinedStruct
+class DIRTSTURRETDEFENSE_API UTurretUpgradeStruct : public UUserDefinedStruct
 {
-	GENERATED_BODY()	
+	GENERATED_BODY()
+	
+	
+	
 	
 };

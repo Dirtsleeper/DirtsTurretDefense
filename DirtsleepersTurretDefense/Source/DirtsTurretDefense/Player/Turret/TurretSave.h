@@ -23,15 +23,18 @@ protected:
 public:
 	TSubclassOf<UWeapon> PrimaryWeapon;
 
-	FWeaponUpgrade PrimaryUpgrades;
+	int32 PrimaryWeaponID = -1;
 
 	TSubclassOf<UWeapon> SecondaryWeapon;
 
-	FWeaponUpgrade SecondaryUpgrades;
+	int32 SecondaryWeaponID = -1;
 
 	TSubclassOf<UWeapon> SpecialWeapon;
 
+	int32 SpecialWeaponID = -1;
+
 public:
+	void SaveTurret(class ATurret* Turret);
 
 protected:
 

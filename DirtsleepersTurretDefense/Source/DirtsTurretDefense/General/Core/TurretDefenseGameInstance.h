@@ -3,6 +3,8 @@
 #pragma once
 #include "GamemodeEnum.h"
 #include "Kismet/GameplayStatics.h"
+#include "Utils/SaveManager.h"
+#include "Player/Weapons/WeaponTypeEnum.h"
 
 #include "CoreMinimal.h"
 #include "Engine/GameInstance.h"
@@ -21,7 +23,12 @@ class DIRTSTURRETDEFENSE_API UTurretDefenseGameInstance : public UGameInstance
 {
 	GENERATED_BODY()
 private:
-	int32 _CurrentSaveSlot = 0;
+	UPROPERTY()
+	class UDataTable* _PrimaryWeaponTable;
+	UPROPERTY()
+	class UDataTable* _SecondaryWeaponTable;
+	UPROPERTY()
+	class UDataTable* _SpecialWeaponTable;
 
 protected:
 	EGamemode m_SelectedGamemode = EGamemode::GM_Default;
@@ -34,16 +41,17 @@ public:
 		return Cast<UTurretDefenseGameInstance>(UGameplayStatics::GetGameInstance(WorldContextObject));
 	}
 
+	UTurretDefenseGameInstance();
+
 	virtual void Init() override;
 
 	void SetSelectedGamemode(EGamemode NewGamemode);
 
-	void SetSaveSlot(int32 Slot);
-
-	int32 GetSaveSlot();
+	struct FWeaponInfo GetWeaponInfoFromDataTable(EWeaponType WeaponType, int32 WeaponID);
 
 protected:
 
 private:
+	void StoreWeaponTables();
 
 };

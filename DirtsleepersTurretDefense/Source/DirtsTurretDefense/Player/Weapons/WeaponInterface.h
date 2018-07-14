@@ -40,7 +40,7 @@ public:
 
 	virtual void SelectSecondaryWeapon();
 
-	UWeapon* GetSelectedWeapon();
+	virtual	UWeapon* GetSelectedWeapon();
 	
 private:
 	AActor* GetOwner();
