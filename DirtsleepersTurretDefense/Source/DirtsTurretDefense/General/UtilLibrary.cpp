@@ -5,3 +5,7 @@
 
 
 
+float UUtilLibrary::FT2CM(float FT)
+{
+	return FT * 30.48f;
+}

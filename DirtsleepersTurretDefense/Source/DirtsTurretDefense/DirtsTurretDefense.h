@@ -3,6 +3,7 @@
 #pragma once
 #include "General/Core/TurretDefenseGameInstance.h"
 #include "Kismet/GameplayStatics.h"
+#include "General/UtilLibrary.h"
 
 #include "CoreMinimal.h"
 

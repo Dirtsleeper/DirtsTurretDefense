@@ -22,18 +22,22 @@ void UTurretDefenseGameInstance::SetSelectedGamemode(EGamemode NewGamemode)
 	m_SelectedGamemode = NewGamemode;
 }
 
-struct FWeaponInfo UTurretDefenseGameInstance::GetWeaponInfoFromDataTable(EWeaponType WeaponType, int32 WeaponID)
+FWeaponInfo* UTurretDefenseGameInstance::GetWeaponInfoFromDataTable(EWeaponType WeaponType, int32 WeaponID)
 {
 	switch (WeaponType)
 	{
 	case EWeaponType::Primary:
+		return _PrimaryWeaponTable->FindRow<FWeaponInfo>(FName(*FString::FromInt(WeaponID)), FString(""));
 		break;
 	case EWeaponType::Secondary:
+		return _SecondaryWeaponTable->FindRow<FWeaponInfo>(FName(*FString::FromInt(WeaponID)), FString(""));
 		break;
 	case EWeaponType::Special:
+		return _SpecialWeaponTable->FindRow<FWeaponInfo>(FName(*FString::FromInt(WeaponID)), FString(""));
 		break;
 	}
-	return FWeaponInfo();
+	check(true);
+	return new FWeaponInfo();
 }
 
 void UTurretDefenseGameInstance::StoreWeaponTables()

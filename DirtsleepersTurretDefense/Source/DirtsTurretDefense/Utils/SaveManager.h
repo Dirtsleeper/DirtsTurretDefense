@@ -1,10 +1,11 @@
 
 #pragma  once
 #include "CoreMinimal.h"
+#include "UObject/GCObject.h"
 
 #include "HUD/Main/Upgrades/UpgradeTypeEnum.h"
 
-class FSaveManager
+class FSaveManager : public FGCObject
 {
 private:
 	static FSaveManager* _singleton;
@@ -27,6 +28,8 @@ public:
 
 public:
 	FSaveManager();
+
+	virtual void AddReferencedObjects(FReferenceCollector& Collector) override;
 
 	static FSaveManager& Get();
 

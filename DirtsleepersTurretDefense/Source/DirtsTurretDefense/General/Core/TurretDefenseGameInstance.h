@@ -47,7 +47,7 @@ public:
 
 	void SetSelectedGamemode(EGamemode NewGamemode);
 
-	struct FWeaponInfo GetWeaponInfoFromDataTable(EWeaponType WeaponType, int32 WeaponID);
+	struct FWeaponInfo* GetWeaponInfoFromDataTable(EWeaponType WeaponType, int32 WeaponID);
 
 protected:
 

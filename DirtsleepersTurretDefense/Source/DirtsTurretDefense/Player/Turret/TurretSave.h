@@ -21,15 +21,9 @@ private:
 protected:
 
 public:
-	TSubclassOf<UWeapon> PrimaryWeapon;
-
 	int32 PrimaryWeaponID = -1;
 
-	TSubclassOf<UWeapon> SecondaryWeapon;
-
 	int32 SecondaryWeaponID = -1;
-
-	TSubclassOf<UWeapon> SpecialWeapon;
 
 	int32 SpecialWeaponID = -1;
 

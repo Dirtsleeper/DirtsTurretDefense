@@ -5,32 +5,33 @@
 
 #include "General/Core/TurretDefenseGameInstance.h"
 #include "Player/Turret/TurretSave.h"
+#include "WeaponInfoStruct.h"
 
 
 void IWeaponInterface::IntializeWeapons(UWeapon*& PrimaryWeapon, UWeapon*& SecondaryWeapon, UWeapon*& SpecialWeapon)
 {
 	if (UTurretSave* PlayerTurretSave = FSaveManager::Get().GetTurretSave())
 	{
-		if (PlayerTurretSave->PrimaryWeapon)
+		if (PlayerTurretSave->PrimaryWeaponID != -1)
 		{
-			PrimaryWeapon = NewObject<UWeapon>(GetOwner(), PlayerTurretSave->PrimaryWeapon.Get());
-			FWeaponInfo Info = GI::GetGameInstance(GetOwner())->GetWeaponInfoFromDataTable(EWeaponType::Primary, PlayerTurretSave->PrimaryWeaponID);
+			FWeaponInfo* Info = GI::GetGameInstance(GetOwner())->GetWeaponInfoFromDataTable(EWeaponType::Primary, PlayerTurretSave->PrimaryWeaponID);
+			PrimaryWeapon = NewObject<UWeapon>(GetOwner(), Info->WeaponClass, TEXT("PrimaryWeapon"));
 			PrimaryWeapon->InitializeWeapon(Info);
 			PrimaryWeapon->RegisterComponent();
 			GetOwner()->AddOwnedComponent(PrimaryWeapon);
 		}
-		if (PlayerTurretSave->SecondaryWeapon)
+		if (PlayerTurretSave->SecondaryWeaponID != -1)
 		{
-			SecondaryWeapon = NewObject<UWeapon>(GetOwner(), PlayerTurretSave->SecondaryWeapon.Get(), TEXT("SecondaryWeapon"));
-			FWeaponInfo Info = GI::GetGameInstance(GetOwner())->GetWeaponInfoFromDataTable(EWeaponType::Secondary, PlayerTurretSave->SecondaryWeaponID);
+			FWeaponInfo* Info = GI::GetGameInstance(GetOwner())->GetWeaponInfoFromDataTable(EWeaponType::Secondary, PlayerTurretSave->SecondaryWeaponID);
+			SecondaryWeapon = NewObject<UWeapon>(GetOwner(), Info->WeaponClass, TEXT("SecondaryWeapon"));
 			SecondaryWeapon->InitializeWeapon(Info);
 			SecondaryWeapon->RegisterComponent();
 			GetOwner()->AddOwnedComponent(SecondaryWeapon);
 		}
-		if (PlayerTurretSave->SpecialWeapon)
+		if (PlayerTurretSave->SpecialWeaponID != -1)
 		{
-			SpecialWeapon = NewObject<UWeapon>(GetOwner(), PlayerTurretSave->SpecialWeapon.Get(), TEXT("SpecialWeapon"));
-			FWeaponInfo Info = GI::GetGameInstance(GetOwner())->GetWeaponInfoFromDataTable(EWeaponType::Special, PlayerTurretSave->SpecialWeaponID);
+			FWeaponInfo* Info = GI::GetGameInstance(GetOwner())->GetWeaponInfoFromDataTable(EWeaponType::Special, PlayerTurretSave->SpecialWeaponID);
+			SpecialWeapon = NewObject<UWeapon>(GetOwner(), Info->WeaponClass, TEXT("SpecialWeapon"));
 			SpecialWeapon->InitializeWeapon(Info);
 			SpecialWeapon->RegisterComponent();
 			GetOwner()->AddOwnedComponent(SpecialWeapon);

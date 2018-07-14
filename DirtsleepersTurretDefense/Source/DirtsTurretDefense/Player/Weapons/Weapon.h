@@ -3,7 +3,6 @@
 #pragma once
 #include "HUD/Main/Upgrades/UpgradeTypeEnum.h"
 #include "WeaponUpgradeStruct.h"
-#include "WeaponInfoStruct.h"
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
@@ -22,7 +21,7 @@ private:
 
 	bool _bInitialized = false;
 
-	FWeaponInfo _Info;
+	struct FWeaponInfo* _Info;
 
 	FWeaponUpgrade _UpgradeState;
 
@@ -39,13 +38,13 @@ public:
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
-	void InitializeWeapon(struct FWeaponInfo WeaponInfo);
+	void InitializeWeapon(struct FWeaponInfo* WeaponInfo);
 
 	void Unlock();
 
 	void Upgrade(EWeaponUpgradeType WeaponUpgrade);
 
-	FWeaponInfo GetInfo();
+	TSharedPtr<FWeaponInfo> GetInfo();
 
 	void FirePressed();
 
@@ -90,6 +89,8 @@ protected:
 	void StartFireTimer();
 
 	void ClearFireTimer();
+
+	bool IsFireTimerActive();
 
 private:
 

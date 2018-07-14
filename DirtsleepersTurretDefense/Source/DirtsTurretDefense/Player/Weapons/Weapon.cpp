@@ -4,6 +4,8 @@
 
 #include "Engine/World.h"
 #include "TimerManager.h"
+#include "Projectiles/Projectile.h"
+#include "WeaponInfoStruct.h"
 
 // Sets default values for this component's properties
 UWeapon::UWeapon()
@@ -38,21 +40,30 @@ void UWeapon::OnRegister()
 
 void UWeapon::OnFirePressed()
 {
-	if (!_bReloading)
+	if (!_bReloading && !IsFireTimerActive())
 	{
 		FireProjectile();
-		StartFireTimer();
 	}
 }
 
 void UWeapon::OnFireReleased()
 {
-	ClearFireTimer();
+	
 }
 
 void UWeapon::FireProjectile()
 {
-	UE_LOG(LogTemp, Error, TEXT("FireProjectile"));
+	if (_bFiring)
+	{
+		FTransform SpawnTransform = FTransform();
+		SpawnTransform.SetLocation(GetOwner()->GetActorLocation() + FVector(0, 0, 100) + GetOwner()->GetActorForwardVector() * 200);
+		SpawnTransform.SetRotation(GetOwner()->GetActorRotation().Quaternion());
+		SpawnTransform.SetScale3D(FVector(10));
+		AProjectile* Projectile = GetWorld()->SpawnActorDeferred<AProjectile>(AProjectile::StaticClass(), SpawnTransform, GetOwner());
+		Projectile->InitializeProjectile(_Info->GetProjectileInfo());
+		Projectile->FinishSpawning(SpawnTransform);
+		StartFireTimer();
+	}
 }
 
 void UWeapon::OnBeginReload()
@@ -73,12 +84,17 @@ void UWeapon::OnFinishReloading()
 
 void UWeapon::StartFireTimer()
 {
-	GetWorld()->GetTimerManager().SetTimer(FireProjectileTimer, this, &UWeapon::FireProjectile, _Info.GetTimeBetweenProjectiles(_UpgradeState), true);
+	GetWorld()->GetTimerManager().SetTimer(FireProjectileTimer, this, &UWeapon::FireProjectile, _Info->GetTimeBetweenProjectiles(_UpgradeState), false);
 }
 
 void UWeapon::ClearFireTimer()
 {
 	GetWorld()->GetTimerManager().ClearTimer(FireProjectileTimer);
+}
+
+bool UWeapon::IsFireTimerActive()
+{
+	return GetWorld()->GetTimerManager().IsTimerActive(FireProjectileTimer);
 }
 
 // Called every frame
@@ -89,27 +105,28 @@ void UWeapon::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponen
 	// ...
 }
 
-void UWeapon::InitializeWeapon(struct FWeaponInfo WeaponInfo)
+void UWeapon::InitializeWeapon(FWeaponInfo* WeaponInfo)
 {
 	_Info = WeaponInfo;
-	_UpgradeState = FSaveManager::Get().GetWeaponUpgrades(WeaponInfo.ID);
+	_UpgradeState = FSaveManager::Get().GetWeaponUpgrades(_Info->ID);
 	_bInitialized = true;
 }
 
 void UWeapon::Unlock()
 {
-	FSaveManager::Get().UnlockWeapon(_Info.ID);
+	FSaveManager::Get().UnlockWeapon(_Info->ID);
 }
 
 void UWeapon::Upgrade(EWeaponUpgradeType WeaponUpgrade)
 {
 	_UpgradeState.Upgrade(WeaponUpgrade);
-	FSaveManager::Get().UpgradeWeapon(_Info.ID, _UpgradeState);
+	FSaveManager::Get().UpgradeWeapon(_Info->ID, _UpgradeState);
 }
 
-FWeaponInfo UWeapon::GetInfo()
+TSharedPtr<FWeaponInfo> UWeapon::GetInfo()
 {
-	return _Info;
+	TSharedPtr<FWeaponInfo> SharedPtr(new FWeaponInfo(*_Info));
+	return SharedPtr;
 }
 
 void UWeapon::FirePressed()
@@ -135,26 +152,26 @@ void UWeapon::Reload()
 
 float UWeapon::GetDamage()
 {
-	return _Info.GetDamage(_UpgradeState);
+	return _Info->GetDamage(_UpgradeState);
 }
 
 float UWeapon::GetArmorPenetration()
 {
-	return _Info.GetArmorPenetration(_UpgradeState);
+	return _Info->GetArmorPenetration(_UpgradeState);
 }
 
 float UWeapon::GetFireRate()
 {
-	return _Info.GetFireRate(_UpgradeState);
+	return _Info->GetFireRate(_UpgradeState);
 }
 
 float UWeapon::GetMagazineSize()
 {
-	return _Info.GetMagazineSize(_UpgradeState);
+	return _Info->GetMagazineSize(_UpgradeState);
 }
 
 float UWeapon::GetReloadTime()
 {
-	return _Info.GetReloadTime(_UpgradeState);
+	return _Info->GetReloadTime(_UpgradeState);
 }
 

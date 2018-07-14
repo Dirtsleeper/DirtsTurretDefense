@@ -10,17 +10,14 @@ void UTurretSave::SaveTurret(ATurret* Turret)
 {
 	if (UWeapon* Primary = Turret->GetPrimaryWeapon())
 	{
-		PrimaryWeapon = Primary->GetClass();
-		PrimaryWeaponID = Primary->GetInfo().ID;
+		PrimaryWeaponID = Primary->GetInfo()->ID;
 	}
 	if (UWeapon* Secondary = Turret->GetSecondaryWeapon())
 	{
-		SecondaryWeapon = Secondary->GetClass();
-		SecondaryWeaponID = Secondary->GetInfo().ID;
+		SecondaryWeaponID = Secondary->GetInfo()->ID;
 	}
 	if (UWeapon* Special = Turret->GetSpecialWeapon())
 	{
-		SpecialWeapon = Special->GetClass();
-		SpecialWeaponID = Special->GetInfo().ID;
+		SpecialWeaponID = Special->GetInfo()->ID;
 	}
 }

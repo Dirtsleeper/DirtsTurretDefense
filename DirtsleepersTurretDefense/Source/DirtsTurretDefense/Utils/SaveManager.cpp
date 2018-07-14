@@ -9,6 +9,7 @@
 #include "Player/Turret/TurretUnlockSave.h"
 #include "Player/Turret/Turret.h"
 #include "Player/Turret/TurretSave.h"
+#include "Player/Weapons/WeaponInfoStruct.h"
 
 namespace
 {
@@ -24,6 +25,15 @@ FSaveManager* FSaveManager::_singleton = nullptr;
 FSaveManager::FSaveManager()
 {
 	LoadSaveFiles();
+}
+
+void FSaveManager::AddReferencedObjects(FReferenceCollector& Collector)
+{
+	Collector.AddReferencedObject(_TurretSave);
+	Collector.AddReferencedObject(_WeaponUnlocks);
+	Collector.AddReferencedObject(_WeaponUpgrades);
+	Collector.AddReferencedObject(_TurretUnlocks);
+	Collector.AddReferencedObject(_TurretUpgrades);
 }
 
 FSaveManager& FSaveManager::Get()
@@ -60,18 +70,15 @@ void FSaveManager::SaveTurret(class ATurret* Turret)
 		}
 		if (Turret->GetPrimaryWeapon())
 		{
-			_TurretSave->PrimaryWeapon = Turret->GetPrimaryWeapon()->GetClass();
-			_TurretSave->PrimaryWeaponID = Turret->GetPrimaryWeapon()->GetInfo().ID;
+			_TurretSave->PrimaryWeaponID = Turret->GetPrimaryWeapon()->GetInfo()->ID;
 		}
 		if (Turret->GetSecondaryWeapon())
 		{
-			_TurretSave->SecondaryWeapon = Turret->GetSecondaryWeapon()->GetClass();
-			_TurretSave->SecondaryWeaponID = Turret->GetSecondaryWeapon()->GetInfo().ID;
+			_TurretSave->SecondaryWeaponID = Turret->GetSecondaryWeapon()->GetInfo()->ID;
 		}
 		if (Turret->GetSpecialWeapon())
 		{
-			_TurretSave->SpecialWeapon = Turret->GetSpecialWeapon()->GetClass();
-			_TurretSave->SpecialWeaponID = Turret->GetSpecialWeapon()->GetInfo().ID;
+			_TurretSave->SpecialWeaponID = Turret->GetSpecialWeapon()->GetInfo()->ID;
 		}
 	}
 	else
@@ -171,7 +178,6 @@ void FSaveManager::LoadTurret()
 		_TurretSave = Cast<UTurretSave>(UGameplayStatics::CreateSaveGameObject(UTurretSave::StaticClass()));
 
 		// Temporary
-		_TurretSave->PrimaryWeapon = UWeapon::StaticClass();
 		_TurretSave->PrimaryWeaponID = 0;
 	}
 }

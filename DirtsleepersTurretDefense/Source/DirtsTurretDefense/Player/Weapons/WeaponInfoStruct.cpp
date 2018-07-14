@@ -6,11 +6,12 @@
 #include "HUD/Main/Upgrades/UpgradeTypeEnum.h"
 #include "Engine/DataTable.h"
 #include "UObject/ConstructorHelpers.h"
+#include "Weapon.h"
 
 
 FWeaponInfo::FWeaponInfo()
 {
-
+	WeaponClass = UWeapon::StaticClass();
 }
 
 float FWeaponInfo::GetDamage(FWeaponUpgrade Upgrades)
@@ -41,4 +42,9 @@ float FWeaponInfo::GetReloadTime(FWeaponUpgrade Upgrades)
 float FWeaponInfo::GetTimeBetweenProjectiles(FWeaponUpgrade Upgrades)
 {
 	return 60.f / GetFireRate(Upgrades);
+}
+
+FProjectileInfo FWeaponInfo::GetProjectileInfo()
+{
+	return ProjectileInfo;
 }

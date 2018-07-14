@@ -2,6 +2,8 @@
 
 #pragma once
 #include "Engine/DataTable.h"
+#include "Projectiles/ProjectileInfoStruct.h"
+#include "Templates/SubclassOf.h"
 
 #include "CoreMinimal.h"
 #include "Engine/UserDefinedStruct.h"
@@ -19,8 +21,6 @@ struct FWeaponInfo : public FTableRowBase
 	GENERATED_BODY()
 private:
 
-protected:
-
 public:
 	UPROPERTY(Category = Default, EditAnywhere, BlueprintReadOnly)
 		int32 ID = -1;
@@ -30,7 +30,10 @@ public:
 		FText FlavorText = FText::FromString(TEXT("Flavor Text"));
 	UPROPERTY(Category = Default, EditAnywhere, BlueprintReadOnly)
 		int32 UnlockCost = 0;
+	UPROPERTY(Category = Default, EditAnywhere, BlueprintReadOnly)
+		TSubclassOf<class UWeapon> WeaponClass;
 
+protected:
 	UPROPERTY(Category = "Damage", EditAnywhere, BlueprintReadOnly)
 		float Damage = 10.f;
 	UPROPERTY(Category = "Damage", EditAnywhere, BlueprintReadOnly)
@@ -66,6 +69,9 @@ public:
 	UPROPERTY(Category = "ReloadTime", EditAnywhere, BlueprintReadOnly)
 		float ReloadTime_Prestige = -0.1f;
 
+	UPROPERTY(Category = "Projectile", EditAnywhere, BlueprintReadOnly)
+		FProjectileInfo ProjectileInfo;
+
 public:
 	FWeaponInfo();
 
@@ -80,6 +86,8 @@ public:
 	float GetReloadTime(FWeaponUpgrade Upgrades);
 
 	float GetTimeBetweenProjectiles(FWeaponUpgrade Upgrades);
+
+	FProjectileInfo GetProjectileInfo();
 
 protected:
 

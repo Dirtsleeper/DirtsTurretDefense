@@ -13,6 +13,18 @@ UCLASS()
 class DIRTSTURRETDEFENSE_API UUtilLibrary : public UBlueprintFunctionLibrary
 {
 	GENERATED_BODY()
+private:
+
+protected:
+
+public:
+
+public:
+	static float FT2CM(float FT);
+
+protected:
+
+private:
 	
 	
 };
