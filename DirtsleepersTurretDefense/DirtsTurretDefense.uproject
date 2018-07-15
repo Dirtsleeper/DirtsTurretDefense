@@ -12,7 +12,8 @@
 				"Engine",
 				"CoreUObject",
 				"UMG",
-				"BlueprintGraph"
+				"BlueprintGraph",
+				"AIModule"
 			]
 		}
 	]
