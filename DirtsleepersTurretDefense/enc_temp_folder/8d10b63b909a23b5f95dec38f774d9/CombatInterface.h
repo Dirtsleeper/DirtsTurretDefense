@@ -8,10 +8,6 @@
 #include "General/Core/ActorInterface.h"
 #include "CombatInterface.generated.h"
 
-#define ECC_Projectile ECC_GameTraceChannel1
-#define ECC_ProjectileTrigger ECC_GameTraceChannel2
-#define ECC_ProjectileTriggerTrace ECC_GameTraceChannel3
-
 // This class does not need to be modified.
 UINTERFACE(MinimalAPI)
 class UCombatInterface : public UActorInterface

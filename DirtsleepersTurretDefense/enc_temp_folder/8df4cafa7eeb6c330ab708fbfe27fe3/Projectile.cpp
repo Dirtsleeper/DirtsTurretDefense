@@ -57,10 +57,6 @@ void AProjectile::OnHit(AActor* SelfActor, AActor* OtherActor, FVector NormalImp
 		{
 			SpawnImpactParticle(EImpactMaterial::Terrain);
 		}
-		if (Hit.GetComponent()->IsSimulatingPhysics())
-		{
-			Hit.GetComponent()->AddImpulseAtLocation(GetVelocity() * 10.f, Hit.Location);
-		}
 	}
 	else
 	{

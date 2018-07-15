@@ -204,38 +204,8 @@ FText ATurret::GetEnemyName()
 
 void ATurret::OnDeath(AActor* Source)
 {
-	m_PrimaryWeapon->SetCollisionResponseToAllChannels(ECR_Ignore);
-	m_PrimaryWeapon->SetCollisionResponseToChannel(ECC_WorldStatic, ECR_Block);
-	m_PrimaryWeapon->SetCollisionResponseToChannel(ECC_Projectile, ECR_Block);
-	m_PrimaryWeapon->SetSimulatePhysics(true);
-	m_PrimaryWeapon->DetachFromComponent(FDetachmentTransformRules::KeepWorldTransform);
-	m_PrimaryWeapon->AddImpulse(FMath::VRand() * 500.f, NAME_None, true);
-	
-	m_BodyPivotMesh->SetCollisionResponseToAllChannels(ECR_Ignore);
-	m_BodyPivotMesh->SetCollisionResponseToChannel(ECC_WorldStatic, ECR_Block);
-	m_BodyPivotMesh->SetCollisionResponseToChannel(ECC_Projectile, ECR_Block);
-	m_BodyPivotMesh->SetSimulatePhysics(true);
-	m_BodyPivotMesh->DetachFromComponent(FDetachmentTransformRules::KeepWorldTransform);
-	m_BodyPivotMesh->AddImpulse(FMath::VRand() * 500.f, NAME_None, true);
-
-	m_BodyMesh->SetCollisionResponseToAllChannels(ECR_Ignore);
-	m_BodyMesh->SetCollisionResponseToChannel(ECC_WorldStatic, ECR_Block);
-	m_BodyMesh->SetCollisionResponseToChannel(ECC_Projectile, ECR_Block);
-	m_BodyMesh->SetSimulatePhysics(true);
-	m_BodyMesh->DetachFromComponent(FDetachmentTransformRules::KeepWorldTransform);
-	m_BodyMesh->AddImpulse(FMath::VRand() * 500.f, NAME_None, true);
-
-	m_SecondaryWeaponLeft->SetCollisionResponseToAllChannels(ECR_Ignore);
-	m_SecondaryWeaponLeft->SetCollisionResponseToChannel(ECC_WorldStatic, ECR_Block);
-	m_SecondaryWeaponLeft->SetCollisionResponseToChannel(ECC_Projectile, ECR_Block);
 	m_SecondaryWeaponLeft->SetSimulatePhysics(true);
 	m_SecondaryWeaponLeft->DetachFromComponent(FDetachmentTransformRules::KeepWorldTransform);
-	m_SecondaryWeaponLeft->AddImpulse(FMath::VRand() * 500.f, NAME_None, true);
-
-	m_SecondaryWeaponRight->SetCollisionResponseToAllChannels(ECR_Ignore);
-	m_SecondaryWeaponRight->SetCollisionResponseToChannel(ECC_WorldStatic, ECR_Block);
-	m_SecondaryWeaponRight->SetCollisionResponseToChannel(ECC_Projectile, ECR_Block);
 	m_SecondaryWeaponRight->SetSimulatePhysics(true);
 	m_SecondaryWeaponRight->DetachFromComponent(FDetachmentTransformRules::KeepWorldTransform);
-	m_SecondaryWeaponRight->AddImpulse(FMath::VRand() * 500.f, NAME_None, true);
 }

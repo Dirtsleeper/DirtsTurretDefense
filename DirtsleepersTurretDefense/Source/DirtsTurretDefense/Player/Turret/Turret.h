@@ -94,6 +94,8 @@ public:
 
 	virtual FText GetEnemyName() override;
 
+	virtual void OnDeath(AActor* Source) override;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

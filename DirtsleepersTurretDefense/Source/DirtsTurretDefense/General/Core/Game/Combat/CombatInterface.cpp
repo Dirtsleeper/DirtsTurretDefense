@@ -72,5 +72,5 @@ void ICombatInterface::OnPossessed(AController* NewController)
 
 void ICombatInterface::OnDeath(AActor* Source)
 {
-
+	GetOwner()->Destroy();
 }

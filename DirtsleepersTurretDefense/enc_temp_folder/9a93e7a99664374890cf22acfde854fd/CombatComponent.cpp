@@ -50,7 +50,7 @@ void UCombatComponent::EnterCombat()
 void UCombatComponent::ExitCombat()
 {
 	m_bInCombat = false;
-	if (!IsDead() && _Info->GetShield() > 0 && _Info->GetShieldRegen() > 0)
+	if (_Info->GetShield() && _Info->GetShieldRegen())
 	{
 		StartShieldRegen();
 	}
@@ -95,11 +95,6 @@ void UCombatComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActo
 
 void UCombatComponent::TakeDamage(const FDamageInfo& DamageInfo)
 {
-	if (IsDead())
-	{
-		return;
-	}
-
 	if (!m_bInCombat)
 	{
 		EnterCombat();
