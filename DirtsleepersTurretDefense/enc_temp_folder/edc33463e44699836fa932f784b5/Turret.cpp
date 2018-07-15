@@ -62,9 +62,9 @@ void ATurret::LookUp(float AxisValue)
 
 void ATurret::LookRight(float AxisValue)
 {
-	if (m_BodyPivotMesh)
+	if (m_BodyMesh)
 	{
-		m_BodyPivotMesh->AddLocalRotation(FRotator(0.f, AxisValue, 0.f));
+		m_BodyMesh->AddLocalRotation(FRotator(0.f, AxisValue, 0.f));
 	}
 }
 
@@ -175,9 +175,4 @@ FVector ATurret::GetForward()
 FRotator ATurret::GetRotation()
 {
 	return m_BodyMesh->GetComponentRotation();
-}
-
-UStaticMeshComponent* ATurret::GetPrimaryWeaponMesh()
-{
-	return m_PrimaryWeapon;
 }

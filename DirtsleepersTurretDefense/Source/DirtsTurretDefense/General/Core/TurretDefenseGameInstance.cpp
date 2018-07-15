@@ -5,6 +5,8 @@
 #include "Engine/DataTable.h"
 #include "UObject/ConstructorHelpers.h"
 #include "Player/Weapons/WeaponInfoStruct.h"
+#include "Game/Combat/CombatInterface.h"
+#include "Game/Combat/CombatInfoStruct.h"
 
 
 UTurretDefenseGameInstance::UTurretDefenseGameInstance()
@@ -24,20 +26,37 @@ void UTurretDefenseGameInstance::SetSelectedGamemode(EGamemode NewGamemode)
 
 FWeaponInfo* UTurretDefenseGameInstance::GetWeaponInfoFromDataTable(EWeaponType WeaponType, int32 WeaponID)
 {
-	switch (WeaponType)
+	if (WeaponID >= 0)
 	{
-	case EWeaponType::Primary:
-		return _PrimaryWeaponTable->FindRow<FWeaponInfo>(FName(*FString::FromInt(WeaponID)), FString(""));
-		break;
-	case EWeaponType::Secondary:
-		return _SecondaryWeaponTable->FindRow<FWeaponInfo>(FName(*FString::FromInt(WeaponID)), FString(""));
-		break;
-	case EWeaponType::Special:
-		return _SpecialWeaponTable->FindRow<FWeaponInfo>(FName(*FString::FromInt(WeaponID)), FString(""));
-		break;
+		switch (WeaponType)
+		{
+		case EWeaponType::Primary:
+			return _PrimaryWeaponTable->FindRow<FWeaponInfo>(FName(*FString::FromInt(WeaponID)), FString(""));
+		case EWeaponType::Secondary:
+			return _SecondaryWeaponTable->FindRow<FWeaponInfo>(FName(*FString::FromInt(WeaponID)), FString(""));
+		case EWeaponType::Special:
+			return _SpecialWeaponTable->FindRow<FWeaponInfo>(FName(*FString::FromInt(WeaponID)), FString(""));
+		case EWeaponType::Enemy:
+			return _EnemyWeaponTable->FindRow<FWeaponInfo>(FName(*FString::FromInt(WeaponID)), FString(""));
+		}
 	}
-	check(true);
+	UE_LOG(LogTemp, Error, TEXT("Invalid Weapon ID"));
 	return new FWeaponInfo();
+}
+
+struct FCombatInfo* UTurretDefenseGameInstance::GetCombatInfoFromDataTable(AActor* Actor)
+{
+	if (ICombatInterface* Interface = Cast<ICombatInterface>(Actor))
+	{
+		FString Name = Interface->GetEnemyName().ToString();
+		Name.ReplaceInline(TEXT(" "), TEXT(""));
+		return _CombatInfoTable->FindRow<FCombatInfo>(FName(*Name), FString(""));
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("Tried to get combat info for an actor that doesn't implement CombatInterface"));
+	}
+	return nullptr;
 }
 
 void UTurretDefenseGameInstance::StoreWeaponTables()
@@ -50,7 +69,7 @@ void UTurretDefenseGameInstance::StoreWeaponTables()
 	}
 	else
 	{
-		UE_LOG(LogTemp, Error, TEXT("Could not find Primary Weapon Data Table. Fix Reference in FSaveManager::StoreWeaponTables"));
+		UE_LOG(LogTemp, Error, TEXT("Could not find Primary Weapon Data Table. Fix Reference in TurretDefenseGameInstance::StoreWeaponTables"));
 	}
 
 	FString SecondaryWeaponTableLocation = TEXT("DataTable'/Game/Player/Weapons/SecondaryWeapons.SecondaryWeapons'");
@@ -61,7 +80,7 @@ void UTurretDefenseGameInstance::StoreWeaponTables()
 	}
 	else
 	{
-		UE_LOG(LogTemp, Error, TEXT("Could not find Secondary Weapon Data Table. Fix Reference in FSaveManager::StoreWeaponTables"));
+		UE_LOG(LogTemp, Error, TEXT("Could not find Secondary Weapon Data Table. Fix Reference in TurretDefenseGameInstance::StoreWeaponTables"));
 	}
 
 	FString SpecialWeaponTableLocation = TEXT("DataTable'/Game/Player/Weapons/SpecialWeapons.SpecialWeapons'");
@@ -72,6 +91,28 @@ void UTurretDefenseGameInstance::StoreWeaponTables()
 	}
 	else
 	{
-		UE_LOG(LogTemp, Error, TEXT("Could not find Special Weapon Data Table. Fix Reference in FSaveManager::StoreWeaponTables"));
+		UE_LOG(LogTemp, Error, TEXT("Could not find Special Weapon Data Table. Fix Reference in TurretDefenseGameInstance::StoreWeaponTables"));
+	}
+
+	FString CombatInfoTableLocation = TEXT("DataTable'/Game/Enemies/Enemies.Enemies'");
+	ConstructorHelpers::FObjectFinder<UDataTable> CombatInfoTableFinder(*CombatInfoTableLocation);
+	if (CombatInfoTableFinder.Succeeded())
+	{
+		_CombatInfoTable = CombatInfoTableFinder.Object;
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("Could not find Combat Info Data Table. Fix Reference in TurretDefenseGameInstance::StoreWeaponTables"));
+	}
+
+	FString EnemyWeaponTableLocation = TEXT("DataTable'/Game/Enemies/EnemyWeapons.EnemyWeapons'");
+	ConstructorHelpers::FObjectFinder<UDataTable> EnemyWeaponTableFinder(*EnemyWeaponTableLocation);
+	if (EnemyWeaponTableFinder.Succeeded())
+	{
+		_EnemyWeaponTable = EnemyWeaponTableFinder.Object;
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("Could not find Enemy Weapon Data Table. Fix Reference in TurretDefenseGameInstance::StoreWeaponTables"));
 	}
 }

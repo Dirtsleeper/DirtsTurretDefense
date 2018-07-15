@@ -5,12 +5,12 @@
 #include "GameFramework/Actor.h"
 
 #include "CoreMinimal.h"
-#include "UObject/Interface.h"
+#include "General/Core/ActorInterface.h"
 #include "WeaponInterface.generated.h"
 
 // This class does not need to be modified.
 UINTERFACE(MinimalAPI)
-class UWeaponInterface : public UInterface
+class UWeaponInterface : public UActorInterface
 {
 	GENERATED_BODY()
 };
@@ -18,7 +18,7 @@ class UWeaponInterface : public UInterface
 /**
  * 
  */
-class DIRTSTURRETDEFENSE_API IWeaponInterface
+class DIRTSTURRETDEFENSE_API IWeaponInterface : public IActorInterface
 {
 	GENERATED_BODY()
 
@@ -43,6 +43,5 @@ public:
 	virtual	UWeapon* GetSelectedWeapon();
 	
 private:
-	AActor* GetOwner();
 	
 };

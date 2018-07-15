@@ -4,12 +4,20 @@
 
 #include "GameFramework/Pawn.h"
 #include "Player/Weapons/WeaponInterface.h"
+#include "Engine/World.h"
 
 void AGameplayPlayerController::Possess(APawn* NewPawn)
 {
 	Super::Possess(NewPawn);
 
 	ControlledPawn = NewPawn;
+}
+
+void AGameplayPlayerController::BeginPlay()
+{
+	Super::BeginPlay();
+
+	GetWorld()->AddController(this);
 }
 
 void AGameplayPlayerController::SetupInputComponent()

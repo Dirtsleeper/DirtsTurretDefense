@@ -7,7 +7,6 @@
 #include "Projectiles/Projectile.h"
 #include "WeaponInfoStruct.h"
 #include "Player/Turret/Turret.h"
-#include "Components/StaticMeshComponent.h"
 
 // Sets default values for this component's properties
 UWeapon::UWeapon()
@@ -57,8 +56,10 @@ void UWeapon::FireProjectile()
 {
 	if (_bFiring)
 	{
-		FTransform SpawnTransform = _Turret->GetPrimaryWeaponMesh()->GetSocketTransform(TEXT("Muzzle"));
-		SpawnTransform.SetScale3D(FVector(5));
+		FTransform SpawnTransform = FTransform();
+		SpawnTransform.SetLocation(GetOwner()->GetActorLocation() + FVector(0, 0, 100) + _Turret->GetForward() * 200);
+		SpawnTransform.SetRotation(_Turret->GetRotation().Quaternion());
+		SpawnTransform.SetScale3D(FVector(10));
 		SpawnProjectile(SpawnTransform);
 		StartFireTimer();
 	}

@@ -6,41 +6,17 @@
 #include "General/Core/TurretDefenseGameInstance.h"
 #include "Player/Turret/TurretSave.h"
 #include "WeaponInfoStruct.h"
+#include "General/Core/Game/Combat/CombatInfoStruct.h"
 
 
 void IWeaponInterface::IntializeWeapons(UWeapon*& PrimaryWeapon, UWeapon*& SecondaryWeapon, UWeapon*& SpecialWeapon)
 {
-	if (UTurretSave* PlayerTurretSave = FSaveManager::Get().GetTurretSave())
-	{
-		if (PlayerTurretSave->PrimaryWeaponID != -1)
-		{
-			FWeaponInfo* Info = GI::GetGameInstance(GetOwner())->GetWeaponInfoFromDataTable(EWeaponType::Primary, PlayerTurretSave->PrimaryWeaponID);
-			PrimaryWeapon = NewObject<UWeapon>(GetOwner(), Info->WeaponClass, TEXT("PrimaryWeapon"));
-			PrimaryWeapon->InitializeWeapon(Info);
-			PrimaryWeapon->RegisterComponent();
-			GetOwner()->AddOwnedComponent(PrimaryWeapon);
-		}
-		if (PlayerTurretSave->SecondaryWeaponID != -1)
-		{
-			FWeaponInfo* Info = GI::GetGameInstance(GetOwner())->GetWeaponInfoFromDataTable(EWeaponType::Secondary, PlayerTurretSave->SecondaryWeaponID);
-			SecondaryWeapon = NewObject<UWeapon>(GetOwner(), Info->WeaponClass, TEXT("SecondaryWeapon"));
-			SecondaryWeapon->InitializeWeapon(Info);
-			SecondaryWeapon->RegisterComponent();
-			GetOwner()->AddOwnedComponent(SecondaryWeapon);
-		}
-		if (PlayerTurretSave->SpecialWeaponID != -1)
-		{
-			FWeaponInfo* Info = GI::GetGameInstance(GetOwner())->GetWeaponInfoFromDataTable(EWeaponType::Special, PlayerTurretSave->SpecialWeaponID);
-			SpecialWeapon = NewObject<UWeapon>(GetOwner(), Info->WeaponClass, TEXT("SpecialWeapon"));
-			SpecialWeapon->InitializeWeapon(Info);
-			SpecialWeapon->RegisterComponent();
-			GetOwner()->AddOwnedComponent(SpecialWeapon);
-		}
-	}
-	else
-	{
-		UE_LOG(LogTemp, Error, TEXT("Failed to find Player Turret Save."));
-	}
+	FCombatInfo* CombatInfo = GI::GetGameInstance(GetOwner())->GetCombatInfoFromDataTable(GetOwner());
+	FWeaponInfo* Info = GI::GetGameInstance(GetOwner())->GetWeaponInfoFromDataTable(EWeaponType::Enemy, CombatInfo->GetWeaponID());
+	PrimaryWeapon = NewObject<UWeapon>(GetOwner(), Info->WeaponClass, FName(*Info->Name.ToString()));
+	PrimaryWeapon->InitializeWeapon(Info);
+	PrimaryWeapon->RegisterComponent();
+	GetOwner()->AddOwnedComponent(PrimaryWeapon);
 }
 
 // Add default functionality here for any IWeaponInterface functions that are not pure virtual.
@@ -88,9 +64,4 @@ UWeapon* IWeaponInterface::GetSelectedWeapon()
 {
 	UE_LOG(LogTemp, Warning, TEXT("Impelement GetSelectedWeapon in %s"), *GetOwner()->GetFName().ToString());
 	return nullptr;
-}
-
-AActor* IWeaponInterface::GetOwner()
-{
-	return Cast<AActor>(this);
 }

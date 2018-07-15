@@ -29,6 +29,8 @@ public:
 	virtual void Possess(APawn* NewPawn) override;
 
 protected:
+	virtual void BeginPlay() override;
+
 	virtual void SetupInputComponent() override;
 
 	void InputAction_Fire_Pressed();

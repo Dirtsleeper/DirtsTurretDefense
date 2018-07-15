@@ -29,6 +29,10 @@ private:
 	class UDataTable* _SecondaryWeaponTable;
 	UPROPERTY()
 	class UDataTable* _SpecialWeaponTable;
+	UPROPERTY()
+	class UDataTable* _EnemyWeaponTable;
+	UPROPERTY()
+	class UDataTable* _CombatInfoTable;
 
 protected:
 	EGamemode m_SelectedGamemode = EGamemode::GM_Default;
@@ -48,6 +52,8 @@ public:
 	void SetSelectedGamemode(EGamemode NewGamemode);
 
 	struct FWeaponInfo* GetWeaponInfoFromDataTable(EWeaponType WeaponType, int32 WeaponID);
+
+	struct FCombatInfo* GetCombatInfoFromDataTable(AActor* Actor);
 
 protected:
 

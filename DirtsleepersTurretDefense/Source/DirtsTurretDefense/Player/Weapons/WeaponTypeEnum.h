@@ -15,6 +15,7 @@ enum class EWeaponType : uint8
 	Primary,
 	Secondary,
 	Special,
+	Enemy,
 	MAX UMETA(Hidden)
 };
 

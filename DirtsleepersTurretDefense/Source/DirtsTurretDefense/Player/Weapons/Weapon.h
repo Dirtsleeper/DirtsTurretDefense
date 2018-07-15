@@ -8,6 +8,7 @@
 #include "Components/ActorComponent.h"
 #include "Weapon.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FReloadSignature);
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class DIRTSTURRETDEFENSE_API UWeapon : public UActorComponent
@@ -27,9 +28,13 @@ private:
 
 	FTimerHandle FireProjectileTimer;
 
+	UPROPERTY()
+	class ATurret* _Turret;
+
 protected:
 
 public:
+	FReloadSignature OnReload;
 
 public:
 	// Sets default values for this component's properties
@@ -79,6 +84,8 @@ protected:
 	virtual void OnFireReleased();
 
 	virtual void FireProjectile();
+
+	virtual class AProjectile* SpawnProjectile(FTransform SpawnTransform);
 
 	virtual void OnBeginReload();
 

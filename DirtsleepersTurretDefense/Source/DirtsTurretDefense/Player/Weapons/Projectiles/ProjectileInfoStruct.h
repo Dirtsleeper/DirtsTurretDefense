@@ -31,6 +31,12 @@ public:
 	*/
 	float Velocity = 1200.f;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	/**
+	* Radius in Feet
+	*/
+	float DamageRadius = 0.f;
+
 	UPROPERTY(Category = "Emitters", EditAnywhere, BlueprintReadOnly)
 	UParticleSystem* Trail;
 
