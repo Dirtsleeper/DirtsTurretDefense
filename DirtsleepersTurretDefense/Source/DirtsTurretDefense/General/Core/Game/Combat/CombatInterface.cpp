@@ -10,6 +10,7 @@
 #include "BehaviorTree/BlackboardData.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "Kismet/GameplayStatics.h"
+#include "Combat/ShieldComponent.h"
 
 
 // Add default functionality here for any ICombatInterface functions that are not pure virtual.
@@ -21,9 +22,19 @@ UCombatComponent* ICombatInterface::GetCombatComponent()
 	return Comp;
 }
 
-void ICombatInterface::TakeDamage(AActor* Source, float Damage, float ArmorPenetration)
+bool ICombatInterface::HasShieldComponent()
 {
-	GetCombatComponent()->TakeDamage(Source, Damage, ArmorPenetration);
+	return Cast<UShieldComponent>(GetOwner()->GetComponentByClass(UShieldComponent::StaticClass())) != nullptr;
+}
+
+class UShieldComponent* ICombatInterface::GetShieldComponent()
+{
+	return Cast<UShieldComponent>(GetOwner()->GetComponentByClass(UShieldComponent::StaticClass()));
+}
+
+void ICombatInterface::TakeDamage(const FDamageInfo& DamageInfo)
+{
+	GetCombatComponent()->TakeDamage(DamageInfo);
 }
 
 struct FCombatInfo* ICombatInterface::GetCombatInfo()

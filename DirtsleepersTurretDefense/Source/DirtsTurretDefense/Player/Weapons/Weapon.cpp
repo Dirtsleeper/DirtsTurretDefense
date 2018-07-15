@@ -58,7 +58,6 @@ void UWeapon::FireProjectile()
 	if (_bFiring)
 	{
 		FTransform SpawnTransform = _Turret->GetPrimaryWeaponMesh()->GetSocketTransform(TEXT("Muzzle"));
-		SpawnTransform.SetScale3D(FVector(5));
 		SpawnProjectile(SpawnTransform);
 		StartFireTimer();
 	}

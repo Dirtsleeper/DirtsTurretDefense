@@ -2,6 +2,7 @@
 
 #pragma once
 #include "General/Core/Game/Combat/AI/TD_AIController.h"
+#include "Combat/DamageInfoStruct.h"
 
 #include "CoreMinimal.h"
 #include "General/Core/ActorInterface.h"
@@ -27,7 +28,11 @@ public:
 
 	virtual class UCombatComponent* GetCombatComponent();
 
-	virtual void TakeDamage(AActor* Source, float Damage, float ArmorPenetration);
+	virtual bool HasShieldComponent();
+
+	virtual class UShieldComponent* GetShieldComponent();
+
+	virtual void TakeDamage(const FDamageInfo& DamageInfo);
 
 	virtual struct FCombatInfo* GetCombatInfo();
 

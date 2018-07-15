@@ -11,6 +11,8 @@
 #include "Player/Weapons/WeaponInfoStruct.h"
 #include "GameFramework/Pawn.h"
 #include "General/Core/Game/Combat/CombatInterface.h"
+#include "Combat/DamageInfoStruct.h"
+#include "Combat/ShieldComponent.h"
 
 // Sets default values
 AProjectile::AProjectile()
@@ -21,10 +23,12 @@ AProjectile::AProjectile()
 	_Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
 	RootComponent = _Mesh;
 
+	_Mesh->SetCollisionObjectType(ECC_GameTraceChannel1);
 	_Mesh->SetCollisionResponseToAllChannels(ECR_Ignore);
 	_Mesh->SetCollisionResponseToChannel(ECC_WorldStatic, ECR_Block);
 	_Mesh->SetCollisionResponseToChannel(ECC_WorldDynamic, ECR_Block);
 	_Mesh->SetCollisionResponseToChannel(ECC_Pawn, ECR_Block);
+	_Mesh->SetCollisionResponseToChannel(ECC_GameTraceChannel2, ECR_Overlap);
 
 	_Trail = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("Trail"));
 	_Trail->SetupAttachment(GetRootComponent());
@@ -47,12 +51,22 @@ void AProjectile::BeginPlay()
 
 void AProjectile::OnHit(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse, const FHitResult& Hit)
 {
-	SpawnImpactParticle(EImpactMaterial::Terrain);
-	DealDamage(OtherActor);
+	if (Hit.GetComponent())
+	{
+		if (!Hit.GetComponent()->IsA(UShieldComponent::StaticClass()))
+		{
+			SpawnImpactParticle(EImpactMaterial::Terrain);
+		}
+	}
+	else
+	{
+		SpawnImpactParticle(EImpactMaterial::Terrain);
+	}
+	DealDamage(OtherActor, Hit);
 	Destroy();
 }
 
-void AProjectile::DealDamage(AActor* HitActor)
+void AProjectile::DealDamage(AActor* HitActor, const FHitResult& Hit)
 {
 	float Radius = UUtilLibrary::FT2CM(_OwningWeapon->GetInfo()->GetProjectileInfo().DamageRadius);
 	if (Radius > 0)
@@ -64,9 +78,15 @@ void AProjectile::DealDamage(AActor* HitActor)
 
 		for (AActor* Actor : OutActors)
 		{
+			FDamageInfo DamageInfo = FDamageInfo(GetOwner(), _OwningWeapon->GetDamage(), _OwningWeapon->GetArmorPenetration());
+			if (Actor == HitActor)
+			{
+				DamageInfo.bDirectHit = true;
+				DamageInfo.HitInfo = Hit;
+			}
 			if (ICombatInterface* Interface = Cast<ICombatInterface>(Actor))
 			{
-				Interface->TakeDamage(GetOwner(), _OwningWeapon->GetDamage(), _OwningWeapon->GetArmorPenetration());
+				Interface->TakeDamage(DamageInfo);
 			}
 		}
 	}
@@ -74,7 +94,7 @@ void AProjectile::DealDamage(AActor* HitActor)
 	{
 		if (ICombatInterface* Interface = Cast<ICombatInterface>(HitActor))
 		{
-			Interface->TakeDamage(GetOwner(), _OwningWeapon->GetDamage(), _OwningWeapon->GetArmorPenetration());
+			Interface->TakeDamage(FDamageInfo(GetOwner(), _OwningWeapon->GetDamage(), _OwningWeapon->GetArmorPenetration(), true, Hit));
 		}
 	}
 }

@@ -40,16 +40,16 @@ public:
 
 	void InitializeProjectile(UWeapon* OwningWeapon);
 
+	UFUNCTION()
+	virtual void OnHit(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse, const FHitResult& Hit);
+
 	void TriggerHit(AActor* Target);
 
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-	UFUNCTION()
-	virtual void OnHit(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse, const FHitResult& Hit);
-
-	void DealDamage(AActor* HitActor);
+	void DealDamage(AActor* HitActor, const FHitResult& Hit);
 
 private:
 	void SpawnImpactParticle(EImpactMaterial ImpactMaterial);

@@ -6,6 +6,7 @@
 #include "GameFramework/Character.h"
 #include "General/Core/TurretDefenseGameInstance.h"
 #include "General/Core/Game/Combat/CombatInterface.h"
+#include "Combat/ShieldComponent.h"
 
 // Sets default values for this component's properties
 UCombatComponent::UCombatComponent()
@@ -24,6 +25,7 @@ void UCombatComponent::BeginPlay()
 	Super::BeginPlay();
 
 	InitializeStats();
+	ExitCombat();
 }
 
 float UCombatComponent::CalculateDamage(float Damage, float ArmorPenetration)
@@ -37,6 +39,42 @@ void UCombatComponent::Death(AActor* Source)
 {
 	Cast<ICombatInterface>(GetOwner())->OnDeath(Source);
 	GetOwner()->Destroy();
+}
+
+void UCombatComponent::EnterCombat()
+{
+	m_bInCombat = true;
+	StopShieldRegen();
+	GetWorld()->GetTimerManager().SetTimer(_CombatTimer, this, &UCombatComponent::ExitCombat, _ExitCombatDuration);
+}
+
+void UCombatComponent::ExitCombat()
+{
+	m_bInCombat = false;
+	if (_Info->GetShield() && _Info->GetShieldRegen())
+	{
+		StartShieldRegen();
+	}
+}
+
+void UCombatComponent::StartShieldRegen()
+{
+	Cast<ICombatInterface>(GetOwner())->GetShieldComponent()->Enable();
+	RegenShieldTick();
+	GetWorld()->GetTimerManager().SetTimer(_ShieldRegenTimer, this, &UCombatComponent::RegenShieldTick, 1.f, true);
+}
+
+void UCombatComponent::StopShieldRegen()
+{
+	GetWorld()->GetTimerManager().ClearTimer(_ShieldRegenTimer);
+}
+
+void UCombatComponent::RegenShieldTick()
+{
+	if (!IsDead())
+	{
+		_ShieldRemaining = FMath::Min(_ShieldRemaining + _Info->GetShieldRegen(), _Info->GetShield());
+	}
 }
 
 void UCombatComponent::InitializeStats()
@@ -56,23 +94,46 @@ void UCombatComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActo
 	// ...
 }
 
-void UCombatComponent::TakeDamage(AActor* Source, float Damage, float ArmorPenetration)
+void UCombatComponent::TakeDamage(const FDamageInfo& DamageInfo)
 {
-	if (_ShieldRemaining)
+	EnterCombat();
+
+	if (_ShieldRemaining > 0)
 	{
-		_ShieldRemaining -= Damage;
-		if (_ShieldRemaining < 0)
+		_ShieldRemaining -= DamageInfo.Damage;
+		if (_ShieldRemaining <= 0)
 		{
-			_CurrentHealth -= CalculateDamage(-_ShieldRemaining, ArmorPenetration);
+			Cast<ICombatInterface>(GetOwner())->GetShieldComponent()->Disable();
+			_ShieldRemaining = 0;
+			_CurrentHealth -= CalculateDamage(-_ShieldRemaining, DamageInfo.ArmorPenetration);
+		}
+		if (DamageInfo.bDirectHit)
+		{
+			Cast<ICombatInterface>(GetOwner())->GetShieldComponent()->Impact(DamageInfo.HitInfo.ImpactPoint);
 		}
 	}
 	else
 	{
-		_CurrentHealth -= CalculateDamage(Damage, ArmorPenetration);
+		_CurrentHealth -= CalculateDamage(DamageInfo.Damage, DamageInfo.ArmorPenetration);
 	}
 	if (_CurrentHealth <= 0)
 	{
-		Death(Source);
+		Death(DamageInfo.Instigator);
 	}
+}
+
+bool UCombatComponent::IsInCombat()
+{
+	return m_bInCombat;
+}
+
+bool UCombatComponent::IsDead()
+{
+	return _CurrentHealth <= 0;
+}
+
+float UCombatComponent::GetShieldPercent()
+{
+	return _ShieldRemaining / _Info->GetShield();
 }
 

@@ -18,7 +18,14 @@ private:
 
 	struct FCombatInfo* _Info;
 
+	FTimerHandle _CombatTimer;
+
+	FTimerHandle _ShieldRegenTimer;
+
+	float _ExitCombatDuration = 5.f;
+
 protected:
+	bool m_bInCombat = false;
 
 public:
 
@@ -29,7 +36,13 @@ public:
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
-	void TakeDamage(AActor* Source, float Damage, float ArmorPenetration);
+	void TakeDamage(const struct FDamageInfo& DamageInfo);
+
+	bool IsInCombat();
+
+	bool IsDead();
+
+	float GetShieldPercent();
 
 protected:
 	// Called when the game starts
@@ -38,6 +51,16 @@ protected:
 	float CalculateDamage(float Damage, float ArmorPenetration);
 
 	void Death(AActor* Source);
+
+	void EnterCombat();
+
+	void ExitCombat();
+
+	void StartShieldRegen();
+
+	void StopShieldRegen();
+
+	void RegenShieldTick();
 
 private:
 	void InitializeStats();

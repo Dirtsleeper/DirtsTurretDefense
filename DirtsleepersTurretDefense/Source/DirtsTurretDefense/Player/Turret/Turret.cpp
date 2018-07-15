@@ -3,6 +3,8 @@
 #include "Turret.h"
 #include "General/Core/TurretDefenseGameInstance.h"
 #include "Player/Weapons/Weapon.h"
+#include "General/Core/Game/Combat/CombatComponent.h"
+#include "Combat/ShieldComponent.h"
 
 #include "Components/StaticMeshComponent.h"
 #include "Camera/CameraComponent.h"
@@ -17,25 +19,38 @@ ATurret::ATurret()
 	PrimaryActorTick.bCanEverTick = true;
 
 	m_BaseMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Base"));
+	m_BaseMesh->SetCollisionObjectType(ECC_Pawn);
 	RootComponent = m_BaseMesh;
 
 	m_BodyPivotMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("BodyPivot"));
+	m_BodyPivotMesh->SetCollisionObjectType(ECC_Pawn);
 	m_BodyPivotMesh->SetupAttachment(GetRootComponent());
 
 	m_BodyMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Body"));
+	m_BodyMesh->SetCollisionObjectType(ECC_Pawn);
 	m_BodyMesh->SetupAttachment(m_BodyPivotMesh);
 
 	m_PrimaryWeapon = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("PrimaryWeapon"));
+	m_PrimaryWeapon->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	m_PrimaryWeapon->SetupAttachment(m_BodyMesh);
 
 	m_SecondaryWeaponLeft = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("SecondaryWeaponLeft"));
+	m_SecondaryWeaponLeft->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	m_SecondaryWeaponLeft->SetupAttachment(m_BodyMesh);
 
 	m_SecondaryWeaponRight = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("SecondaryWeaponRight"));
+	m_SecondaryWeaponRight->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	m_SecondaryWeaponRight->SetupAttachment(m_BodyMesh);
 
 	m_Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
 	m_Camera->SetupAttachment(m_BodyMesh);
+
+
+	m_CombatComponent = CreateDefaultSubobject<UCombatComponent>(TEXT("CombatComponent"));
+	AddOwnedComponent(m_CombatComponent);
+
+	m_ShieldComponent = CreateDefaultSubobject<UShieldComponent>(TEXT("ShieldComponent"));
+	m_ShieldComponent->SetupAttachment(m_BaseMesh);
 }
 
 // Called when the game starts or when spawned
@@ -180,4 +195,9 @@ FRotator ATurret::GetRotation()
 UStaticMeshComponent* ATurret::GetPrimaryWeaponMesh()
 {
 	return m_PrimaryWeapon;
+}
+
+FText ATurret::GetEnemyName()
+{
+	return FText::FromString(TEXT("Turret"));
 }

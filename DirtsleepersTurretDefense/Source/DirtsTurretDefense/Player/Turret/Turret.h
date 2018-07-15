@@ -2,6 +2,7 @@
 
 #pragma once
 #include "Player/Weapons/WeaponInterface.h"
+#include "General/Core/Game/Combat/CombatInterface.h"
 
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
@@ -10,7 +11,7 @@
 class UStaticMeshComponent;
 
 UCLASS(Abstract)
-class DIRTSTURRETDEFENSE_API ATurret : public APawn, public IWeaponInterface
+class DIRTSTURRETDEFENSE_API ATurret : public APawn, public IWeaponInterface, public ICombatInterface
 {
 	GENERATED_BODY()
 
@@ -32,6 +33,7 @@ private:
 	class UTurretSave* _PlayerTurretSave;
 
 protected:
+	// Scene Components
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly)
 	UStaticMeshComponent* m_BaseMesh;
 
@@ -53,6 +55,14 @@ protected:
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly)
 	class UCameraComponent* m_Camera;
 
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly)
+	class UShieldComponent* m_ShieldComponent;
+
+
+	// Actor Components
+	UPROPERTY()
+	class UCombatComponent* m_CombatComponent;
+	
 public:
 
 public:
@@ -81,6 +91,8 @@ public:
 	FRotator GetRotation();
 
 	UStaticMeshComponent* GetPrimaryWeaponMesh();
+
+	virtual FText GetEnemyName() override;
 
 protected:
 	// Called when the game starts or when spawned
